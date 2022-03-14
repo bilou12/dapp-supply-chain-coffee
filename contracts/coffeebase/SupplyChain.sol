@@ -1,7 +1,12 @@
 pragma solidity ^0.4.24;
 
+import '../coffeeaccesscontrol/FarmerRole.sol';
+import '../coffeeaccesscontrol/DistributorRole.sol';
+import '../coffeeaccesscontrol/RetailerRole.sol';
+import '../coffeeaccesscontrol/ConsumerRole.sol';
+
 // Define a contract 'Supplychain'
-contract SupplyChain {
+contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole {
 
   // Define 'owner'
   address owner;
@@ -17,8 +22,9 @@ contract SupplyChain {
 
   // Define a public mapping 'itemsHistory' that maps the UPC to an array of TxHash, 
   // that track its journey through the supply chain -- to be sent from DApp.
+  // mapping (uint => Txblocks) itemsHistory;
   mapping (uint => string[]) itemsHistory;
-  
+
   // Define enum 'State' with the following values:
   enum State 
   { 
@@ -51,6 +57,12 @@ contract SupplyChain {
     address distributorID;  // Metamask-Ethereum address of the Distributor
     address retailerID; // Metamask-Ethereum address of the Retailer
     address consumerID; // Metamask-Ethereum address of the Consumer
+  }
+
+  struct Txblocks {
+    uint blockFarmerToDistributor;
+    uint blockDistributorToRetailer;
+    uint blockRetailerToConsumer;
   }
 
   // Define 8 events with the same 8 state values and accept 'upc' as input argument
@@ -154,7 +166,9 @@ contract SupplyChain {
   }
 
   // Define a function 'harvestItem' that allows a farmer to mark an item 'Harvested'
-  function harvestItem(uint _upc, address _originFarmerID, string _originFarmName, string _originFarmInformation, string  _originFarmLatitude, string  _originFarmLongitude, string  _productNotes) public {
+  function harvestItem(
+    uint _upc, address _originFarmerID, string _originFarmName, string _originFarmInformation, string  _originFarmLatitude, 
+    string  _originFarmLongitude, string  _productNotes) public onlyFarmer() {
 
     // Add the new item as part of Harvest
     Item memory item;
@@ -169,6 +183,13 @@ contract SupplyChain {
     item.productID = sku + _upc;
     item.productNotes = _productNotes;
 
+    // uint placeholder;
+    // TxBlocks memory txBlocks;
+    // txBlocks.blockFarmerToDistributor = placeholder;
+    // txBlocks.blockDistributorToRetailer = placeholder;
+    // txBlocks.blockRetailerToConsumer = placeholder;
+    // itemsHistory[_upc] = txBlock;
+
     // Increment sku
     sku = sku + 1;
 
@@ -179,7 +200,7 @@ contract SupplyChain {
   // Define a function 'processtItem' that allows a farmer to mark an item 'Processed'
   // Call modifier to check if upc has passed previous supply chain stage
   // Call modifier to verify caller of this function
-  function processItem(uint _upc) public harvested(_upc) verifyCaller(items[_upc].originFarmerID) {
+  function processItem(uint _upc) public onlyFarmer() harvested(_upc) verifyCaller(items[_upc].originFarmerID) {
     // Update the appropriate fields
     items[_upc].itemState = State.Processed;
 
@@ -190,7 +211,7 @@ contract SupplyChain {
   // Define a function 'packItem' that allows a farmer to mark an item 'Packed'
   // Call modifier to check if upc has passed previous supply chain stage  
   // Call modifier to verify caller of this function
-  function packItem(uint _upc) public processed(_upc) verifyCaller(items[_upc].originFarmerID) {
+  function packItem(uint _upc) public onlyFarmer() processed(_upc) verifyCaller(items[_upc].originFarmerID) {
     // Update the appropriate fields
     items[_upc].itemState = State.Packed;
     
@@ -201,7 +222,7 @@ contract SupplyChain {
   // Define a function 'sellItem' that allows a farmer to mark an item 'ForSale'
   // Call modifier to check if upc has passed previous supply chain stage  
   // Call modifier to verify caller of this function
-  function sellItem(uint _upc, uint _price) public packed(_upc) verifyCaller(items[_upc].originFarmerID) {
+  function sellItem(uint _upc, uint _price) public onlyFarmer() packed(_upc) verifyCaller(items[_upc].originFarmerID) {
     // Update the appropriate fields
     items[_upc].itemState = State.ForSale;
     items[_upc].productPrice = _price;
@@ -217,7 +238,7 @@ contract SupplyChain {
   // Call modifier to check if upc has passed previous supply chain stage
   // Call modifer to check if buyer has paid enough    
   // Call modifer to send any excess ether back to buyer
-  function buyItem(uint _upc) public payable forSale(_upc) paidEnough(items[_upc].productPrice) checkValue(_upc) {
+  function buyItem(uint _upc) public payable onlyDistributor() forSale(_upc) paidEnough(items[_upc].productPrice) checkValue(_upc) {
     // Update the appropriate fields - ownerID, distributorID, itemState
     items[_upc].ownerID = msg.sender;
     items[_upc].distributorID = msg.sender;
@@ -236,7 +257,7 @@ contract SupplyChain {
   // Call modifier to check if upc has passed previous supply chain stage    
   // Call modifier to verify caller of this function
 
-  function shipItem(uint _upc) public sold(_upc) verifyCaller(items[_upc].originFarmerID) {
+  function shipItem(uint _upc) public onlyFarmer() sold(_upc) verifyCaller(items[_upc].originFarmerID) {
     // Update the appropriate fields
     items[_upc].itemState = State.Shipped;
 
@@ -249,7 +270,7 @@ contract SupplyChain {
 
   // Call modifier to check if upc has passed previous supply chain stage    
   // todo - Access Control List enforced by calling Smart Contract / DApp
-  function receiveItem(uint _upc) public shipped(_upc) {
+  function receiveItem(uint _upc) public onlyRetailer() shipped(_upc) {
     // Update the appropriate fields - ownerID, retailerID, itemState
     items[_upc].ownerID = msg.sender;
     items[_upc].retailerID = msg.sender;
@@ -264,7 +285,7 @@ contract SupplyChain {
 
   // Call modifier to check if upc has passed previous supply chain stage
   // Access Control List enforced by calling Smart Contract / DApp
-  function purchaseItem(uint _upc) public received(_upc) {
+  function purchaseItem(uint _upc) public onlyConsumer() received(_upc) {
     // Update the appropriate fields - ownerID, consumerID, itemState
     items[_upc].ownerID = msg.sender;
     items[_upc].consumerID = msg.sender;
