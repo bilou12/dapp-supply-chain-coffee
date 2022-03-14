@@ -1,2 +1,4 @@
 .infura-key
 .secret
+node_modules
+build
