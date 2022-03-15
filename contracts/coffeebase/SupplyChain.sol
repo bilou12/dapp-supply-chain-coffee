@@ -94,11 +94,11 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
   }
   
   // Define a modifier that checks the price and refunds the remaining balance
-  modifier checkValue(uint _upc) {
+  modifier checkValue(uint _upc, address addressToFund) {
     _;
     uint _price = items[_upc].productPrice;
     uint amountToReturn = msg.value - _price;
-    items[_upc].consumerID.transfer(amountToReturn);
+    addressToFund.transfer(amountToReturn);
   }
 
   // Define a modifier that checks if an item.state of a upc is Harvested
@@ -165,6 +165,10 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
     }
   }
 
+  function _make_payable(address x) internal pure returns (address) {
+      return address(uint160(x));
+  }
+
   // Define a function 'harvestItem' that allows a farmer to mark an item 'Harvested'
   function harvestItem(
     uint _upc, address _originFarmerID, string _originFarmName, string _originFarmInformation, string  _originFarmLatitude, 
@@ -174,7 +178,7 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
     Item memory item;
     item.sku = sku;
     item.upc = _upc;
-    item.ownerID = msg.sender;
+    item.ownerID = _originFarmerID;
     item.originFarmerID = _originFarmerID;
     item.originFarmName = _originFarmName;
     item.originFarmInformation = _originFarmInformation;
@@ -182,6 +186,8 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
     item.originFarmLongitude = _originFarmLongitude; 
     item.productID = sku + _upc;
     item.productNotes = _productNotes;
+
+    items[_upc] = item;
 
     // uint placeholder;
     // TxBlocks memory txBlocks;
@@ -238,7 +244,7 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
   // Call modifier to check if upc has passed previous supply chain stage
   // Call modifer to check if buyer has paid enough    
   // Call modifer to send any excess ether back to buyer
-  function buyItem(uint _upc) public payable onlyDistributor() forSale(_upc) paidEnough(items[_upc].productPrice) checkValue(_upc) {
+  function buyItem(uint _upc) public payable onlyDistributor() forSale(_upc) paidEnough(items[_upc].productPrice) checkValue(_upc, msg.sender) {
     // Update the appropriate fields - ownerID, distributorID, itemState
     items[_upc].ownerID = msg.sender;
     items[_upc].distributorID = msg.sender;
@@ -285,10 +291,14 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
 
   // Call modifier to check if upc has passed previous supply chain stage
   // Access Control List enforced by calling Smart Contract / DApp
-  function purchaseItem(uint _upc) public onlyConsumer() received(_upc) {
+  function purchaseItem(uint _upc) public onlyConsumer() received(_upc) checkValue(_upc, msg.sender) {
     // Update the appropriate fields - ownerID, consumerID, itemState
     items[_upc].ownerID = msg.sender;
     items[_upc].consumerID = msg.sender;
+
+    address ownerAddressPayable = _make_payable(items[_upc].retailerID);
+    ownerAddressPayable.transfer(items[_upc].productPrice);
+
     items[_upc].itemState = State.Purchased;
 
     // Emit the appropriate event
