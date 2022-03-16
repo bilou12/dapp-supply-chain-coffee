@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.8.12;
 
 import '../coffeeaccesscontrol/FarmerRole.sol';
 import '../coffeeaccesscontrol/DistributorRole.sol';
@@ -98,7 +98,7 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
     _;
     uint _price = items[_upc].productPrice;
     uint amountToReturn = msg.value - _price;
-    addressToFund.transfer(amountToReturn);
+    payable(addressToFund).transfer(amountToReturn);
   }
 
   // Define a modifier that checks if an item.state of a upc is Harvested
@@ -152,7 +152,7 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
   // In the constructor set 'owner' to the address that instantiated the contract
   // and set 'sku' to 1
   // and set 'upc' to 1
-  constructor() public payable {
+  constructor() {
     owner = msg.sender;
     sku = 1;
     upc = 1;
@@ -161,24 +161,20 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
   // Define a function 'kill' if required
   function kill() public {
     if (msg.sender == owner) {
-      selfdestruct(owner);
+      selfdestruct(payable(owner));
     }
-  }
-
-  function _make_payable(address x) internal pure returns (address) {
-      return address(uint160(x));
   }
 
   // Define a function 'harvestItem' that allows a farmer to mark an item 'Harvested'
   function harvestItem(
-    uint _upc, address _originFarmerID, string _originFarmName, string _originFarmInformation, string  _originFarmLatitude, 
-    string  _originFarmLongitude, string  _productNotes) public onlyFarmer() {
+    uint _upc, address _originFarmerID, string memory _originFarmName, string memory _originFarmInformation, string memory _originFarmLatitude, 
+    string memory _originFarmLongitude, string memory _productNotes) public onlyFarmer() {
 
     // Add the new item as part of Harvest
     Item memory item;
     item.sku = sku;
     item.upc = _upc;
-    item.ownerID = _originFarmerID;
+    item.ownerID = msg.sender;
     item.originFarmerID = _originFarmerID;
     item.originFarmName = _originFarmName;
     item.originFarmInformation = _originFarmInformation;
@@ -206,6 +202,8 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
   // Define a function 'processtItem' that allows a farmer to mark an item 'Processed'
   // Call modifier to check if upc has passed previous supply chain stage
   // Call modifier to verify caller of this function
+
+  // onlyFarmer() harvested(_upc) verifyCaller(items[_upc].originFarmerID)
   function processItem(uint _upc) public onlyFarmer() harvested(_upc) verifyCaller(items[_upc].originFarmerID) {
     // Update the appropriate fields
     items[_upc].itemState = State.Processed;
@@ -244,6 +242,8 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
   // Call modifier to check if upc has passed previous supply chain stage
   // Call modifer to check if buyer has paid enough    
   // Call modifer to send any excess ether back to buyer
+
+  // checkValue(_upc, msg.sender) 
   function buyItem(uint _upc) public payable onlyDistributor() forSale(_upc) paidEnough(items[_upc].productPrice) checkValue(_upc, msg.sender) {
     // Update the appropriate fields - ownerID, distributorID, itemState
     items[_upc].ownerID = msg.sender;
@@ -251,7 +251,8 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
     items[_upc].itemState = State.Sold;
 
     // Transfer money to farmer
-    items[_upc].originFarmerID.transfer(msg.value);
+    address payable wallet = payable(items[_upc].originFarmerID);
+    wallet.transfer(msg.value);
 
     // emit the appropriate event
     emit Sold(_upc);
@@ -290,14 +291,13 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
   // Use the above modifiers to check if the item is received
 
   // Call modifier to check if upc has passed previous supply chain stage
-  // Access Control List enforced by calling Smart Contract / DApp
-  function purchaseItem(uint _upc) public onlyConsumer() received(_upc) checkValue(_upc, msg.sender) {
-    // Update the appropriate fields - ownerID, consumerID, itemState
+  // todo - Access Control List enforced by calling Smart Contract / DApp
+  function purchaseItem(uint _upc) public payable onlyConsumer() received(_upc) checkValue(_upc, msg.sender) {
     items[_upc].ownerID = msg.sender;
     items[_upc].consumerID = msg.sender;
 
-    address ownerAddressPayable = _make_payable(items[_upc].retailerID);
-    ownerAddressPayable.transfer(items[_upc].productPrice);
+    address payable wallet = payable(items[_upc].retailerID);
+    wallet.transfer(items[_upc].productPrice);
 
     items[_upc].itemState = State.Purchased;
 
@@ -311,10 +311,10 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
     uint    itemUPC,
     address ownerID,
     address originFarmerID,
-    string  originFarmName,
-    string  originFarmInformation,
-    string  originFarmLatitude,
-    string  originFarmLongitude
+    string memory originFarmName,
+    string memory originFarmInformation,
+    string memory originFarmLatitude,
+    string memory originFarmLongitude
   ) {
     // Assign values to the 8 parameters
     itemSKU = items[_upc].sku; 
@@ -341,12 +341,12 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
   // Define a function 'fetchItemBufferTwo' that fetches the data
   function fetchItemBufferTwo(uint _upc) public view returns 
   (
-    uint    itemSKU,
-    uint    itemUPC,
-    uint    productID,
-    string  productNotes,
-    uint    productPrice,
-    uint    itemState,
+    uint itemSKU,
+    uint itemUPC,
+    uint productID,
+    string memory productNotes,
+    uint productPrice,
+    uint itemState,
     address distributorID,
     address retailerID,
     address consumerID
