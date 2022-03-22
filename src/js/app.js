@@ -164,6 +164,9 @@ App = {
             case 10:
                 return await App.fetchItemBufferTwo(event);
                 break;
+            case 11:
+                return await App.addRoles(event);
+                break;
         }
     },
 
@@ -184,7 +187,7 @@ App = {
         App.contracts.SupplyChain.deployed().then(function (instance) {
             return instance.harvestItem(
                 App.upc,
-                App.metamaskAccountID,
+                App.originFarmerID,
                 App.originFarmName,
                 App.originFarmInformation,
                 App.originFarmLatitude,
@@ -343,6 +346,14 @@ App = {
         }).catch(function (err) {
             console.log(err.message);
         });
+    },
+
+    addRoles: async function () {
+        const instance = await App.contracts.SupplyChain.deployed();
+
+        await instance.addDistributor(App.distributorID);
+        await instance.addRetailer(App.retailerID);
+        await instance.addConsumer(App.consumerID);
     },
 
     fetchEvents: function () {

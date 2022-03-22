@@ -10,7 +10,7 @@ import '../coffeecore/Ownable.sol';
 contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, ConsumerRole {
 
   // Define 'owner'
-  // address owner;
+  // address payable owner;
 
   // Define a variable called 'upc' for Universal Product Code (UPC)
   uint  upc;
@@ -60,11 +60,11 @@ contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, Cons
     address consumerID; // Metamask-Ethereum address of the Consumer
   }
 
-  struct Txblocks {
-    uint blockFarmerToDistributor;
-    uint blockDistributorToRetailer;
-    uint blockRetailerToConsumer;
-  }
+  // struct Txblocks {
+  //   uint blockFarmerToDistributor;
+  //   uint blockDistributorToRetailer;
+  //   uint blockRetailerToConsumer;
+  // }
 
   // Define 8 events with the same 8 state values and accept 'upc' as input argument
   event Harvested(uint upc);
@@ -154,15 +154,15 @@ contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, Cons
   // and set 'sku' to 1
   // and set 'upc' to 1
   constructor() {
-    // owner = msg.sender;
+    // owner = payable(Ownable.ownerOrig());
     sku = 1;
     upc = 1;
   }
 
   // Define a function 'kill' if required
   function kill() public {
-    if (msg.sender == (owner())) {
-      selfdestruct(payable(owner()));
+    if (msg.sender == Ownable.ownerOrig()) {
+      selfdestruct(payable(Ownable.ownerOrig()));
     }
   }
 
@@ -171,11 +171,14 @@ contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, Cons
     uint _upc, address _originFarmerID, string memory _originFarmName, string memory _originFarmInformation, string memory _originFarmLatitude, 
     string memory _originFarmLongitude, string memory _productNotes) public onlyFarmer() {
 
+    Ownable.transferOwnership(_originFarmerID);
+    FarmerRole.addFarmer(_originFarmerID);
+
     // Add the new item as part of Harvest
     Item memory item;
     item.sku = sku;
     item.upc = _upc;
-    item.ownerID = msg.sender;
+    item.ownerID = Ownable.ownerOrig();
     item.originFarmerID = _originFarmerID;
     item.originFarmName = _originFarmName;
     item.originFarmInformation = _originFarmInformation;
