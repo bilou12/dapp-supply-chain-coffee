@@ -224,7 +224,7 @@ contract('SupplyChain', function (accounts) {
 
         await supplyChain.buyItem(upc, {
             from: distributorID,
-            value: productPrice
+            value: web3.utils.toWei("3", "ether")
         });
 
         // Retrieve the just now saved item from blockchain by calling function fetchItem()

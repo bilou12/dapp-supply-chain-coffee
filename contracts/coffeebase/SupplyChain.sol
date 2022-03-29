@@ -10,7 +10,7 @@ import '../coffeecore/Ownable.sol';
 contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, ConsumerRole {
 
   // Define 'owner'
-  // address payable owner;
+  address payable owner;
 
   // Define a variable called 'upc' for Universal Product Code (UPC)
   uint  upc;
@@ -90,16 +90,16 @@ contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, Cons
 
   // Define a modifier that checks if the paid amount is sufficient to cover the price
   modifier paidEnough(uint _price) { 
-    require(msg.value >= _price); 
+    require(msg.value >= _price, "the amount paid is not sufficient"); 
     _;
   }
   
   // Define a modifier that checks the price and refunds the remaining balance
-  modifier checkValue(uint _upc, address addressToFund) {
-    _;
+  modifier checkValue(uint _upc) {
     uint _price = items[_upc].productPrice;
     uint amountToReturn = msg.value - _price;
-    payable(addressToFund).transfer(amountToReturn);
+    owner.transfer(amountToReturn);
+    _;
   }
 
   // Define a modifier that checks if an item.state of a upc is Harvested
@@ -154,7 +154,7 @@ contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, Cons
   // and set 'sku' to 1
   // and set 'upc' to 1
   constructor() {
-    // owner = payable(Ownable.ownerOrig());
+    owner = payable(Ownable.ownerOrig());
     sku = 1;
     upc = 1;
   }
@@ -178,7 +178,7 @@ contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, Cons
     Item memory item;
     item.sku = sku;
     item.upc = _upc;
-    item.ownerID = Ownable.ownerOrig();
+    item.ownerID = payable(Ownable.ownerOrig());
     item.originFarmerID = _originFarmerID;
     item.originFarmName = _originFarmName;
     item.originFarmInformation = _originFarmInformation;
@@ -248,15 +248,16 @@ contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, Cons
   // Call modifer to send any excess ether back to buyer
 
   // checkValue(_upc, msg.sender) 
-  function buyItem(uint _upc) public payable onlyDistributor() forSale(_upc) paidEnough(items[_upc].productPrice) checkValue(_upc, msg.sender) {
+  function buyItem(uint _upc) public payable onlyDistributor() forSale(_upc) paidEnough(items[_upc].productPrice) checkValue(_upc) {
+  // function buyItem(uint _upc) public payable forSale(_upc) onlyDistributor() {
+    
+    // Transfer money to farmer
+    payable(items[_upc].originFarmerID).transfer(items[_upc].productPrice);
+
     // Update the appropriate fields - ownerID, distributorID, itemState
     items[_upc].ownerID = msg.sender;
-    items[_upc].distributorID = msg.sender;
+    items[_upc].distributorID = payable(msg.sender);
     items[_upc].itemState = State.Sold;
-
-    // Transfer money to farmer
-    address payable wallet = payable(items[_upc].originFarmerID);
-    wallet.transfer(msg.value);
 
     // emit the appropriate event
     emit Sold(_upc);
@@ -296,7 +297,7 @@ contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, Cons
 
   // Call modifier to check if upc has passed previous supply chain stage
   // todo - Access Control List enforced by calling Smart Contract / DApp
-  function purchaseItem(uint _upc) public payable onlyConsumer() received(_upc) checkValue(_upc, msg.sender) {
+  function purchaseItem(uint _upc) public payable onlyConsumer() received(_upc) checkValue(_upc) {
     items[_upc].ownerID = msg.sender;
     items[_upc].consumerID = msg.sender;
 
