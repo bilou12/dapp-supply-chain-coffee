@@ -12,6 +12,7 @@ The actors are represented by their ethereum addresses. The owner of the contrac
 ![farm_details](docs/farm_details.PNG)
 ![product_details](docs/product_details.PNG)
 
+![tx_history](docs/tx_history.PNG)
 
 ![console_fetch_item_buffer](docs/console_fetch_item_buffer.PNG)
 
