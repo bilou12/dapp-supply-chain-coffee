@@ -155,12 +155,12 @@ npm run dev
 ```
 
 
-Deployment on the Rinkeby network:
-Etherscan transaction: https://rinkeby.etherscan.io/tx/0x1560b45e821f469cda9ca317a0bead1f62603992f85645936ff54e0f3adb3de1
-Contract address: 0x35C1FDdd4E1d5cc70890f150695e86dAee9dC7f5
+* Deployment on the Rinkeby network:
+   * Etherscan transaction: https://rinkeby.etherscan.io/tx/0x1560b45e821f469cda9ca317a0bead1f62603992f85645936ff54e0f3adb3de1
+   * Contract address: 0x35C1FDdd4E1d5cc70890f150695e86dAee9dC7f5
 
 
-Libraries used in the projects:
-- truffle: to help compile, test and deploy the smart-contracts
-- mocha / chai: js testing framework / assertions
-- web3: to interact with ethereum nodes
+* Libraries used in the projects:
+   - truffle: to help compile, test and deploy the smart-contracts
+   - mocha / chai: js testing framework / assertions
+   - web3: to interact with ethereum nodes
