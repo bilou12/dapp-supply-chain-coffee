@@ -222,6 +222,12 @@ contract('SupplyChain', function (accounts) {
             from: ownerID
         });
 
+        const resIsDist = await supplyChain.isDistributor(distributorID, {
+            from: ownerID
+        })
+
+        assert.equal(resIsDist, true);
+
         await supplyChain.buyItem(upc, {
             from: distributorID,
             value: web3.utils.toWei("3", "ether")

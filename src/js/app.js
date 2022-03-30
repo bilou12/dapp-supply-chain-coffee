@@ -130,6 +130,8 @@ App = {
 
         App.getMetaskAccountID();
 
+        App.readForm();
+
         var processId = parseInt($(event.target).data('id'));
         console.log('processId', processId);
 
@@ -166,6 +168,9 @@ App = {
                 break;
             case 11:
                 return await App.addRoles(event);
+                break;
+            case 12:
+                return await App.checkDistributorRole(event);
                 break;
         }
     },
@@ -257,12 +262,9 @@ App = {
         var processId = parseInt($(event.target).data('id'));
 
         App.contracts.SupplyChain.deployed().then(function (instance) {
-            // const walletValue = web3.utils.toWei("3", "ether");
-            const walletValue = web3.toWei("3", "ether");
-
             return instance.buyItem(App.upc, {
                 from: App.metamaskAccountID,
-                value: walletValue
+                value: web3.toWei("3", "ether")
             });
         }).then(function (result) {
             $("#ftc-item").text(result);
@@ -310,7 +312,8 @@ App = {
 
         App.contracts.SupplyChain.deployed().then(function (instance) {
             return instance.purchaseItem(App.upc, {
-                from: App.metamaskAccountID
+                from: App.metamaskAccountID,
+                value: web3.toWei("3", "ether")
             });
         }).then(function (result) {
             $("#ftc-item").text(result);
@@ -351,11 +354,28 @@ App = {
     },
 
     addRoles: async function () {
+        App.readForm();
+
         const instance = await App.contracts.SupplyChain.deployed();
 
+        console.log('addDistributor: ' + App.distributorID);
         await instance.addDistributor(App.distributorID);
+
+        console.log('addRetailer: ' + App.retailerID);
         await instance.addRetailer(App.retailerID);
+
+        console.log('addConsumer: ' + App.consumerID);
         await instance.addConsumer(App.consumerID);
+    },
+
+    checkDistributorRole: async function () {
+        App.readForm();
+
+        const instance = await App.contracts.SupplyChain.deployed();
+
+        var isDist = await instance.isDistributor(App.distributorID);
+
+        console.log(App.distributorID + ' isDist: ' + isDist);
     },
 
     fetchEvents: function () {
