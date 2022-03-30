@@ -6,7 +6,15 @@ The application suits the interactions between farmers, distributors, retailers 
 
 The actors are represented by their ethereum addresses. The owner of the contract is initially in charge to add the addresses to the distributor, retailer, consumer roles respectively.
 
+* UML
+   * Activity diagram
 ![activity_diagram](docs/activity_diagram.PNG)
+   * Sequence diagram
+![sequence_diagram](docs/sequence_diagram.PNG)
+   * State diagram
+![state_diagram](docs/state_diagram.PNG)
+   * Class diagram
+![class_diagram](docs/class_diagram.PNG)
 
 
 ## Getting started
