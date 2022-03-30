@@ -6,6 +6,16 @@ The application suits the interactions between farmers, distributors, retailers 
 
 The actors are represented by their ethereum addresses. The owner of the contract is initially in charge to add the addresses to the distributor, retailer, consumer roles respectively.
 
+![add_roles](docs/add_roles.PNG)
+
+![product_overview](docs/product_overview.PNG)
+![farm_details](docs/farm_details.PNG)
+![product_details](docs/product_details.PNG)
+
+
+![console_fetch_item_buffer](docs/console_fetch_item_buffer.PNG)
+
+
 * UML
    * Activity diagram
    
@@ -173,6 +183,8 @@ npm run dev
 * Deployment on the Rinkeby network:
    * Etherscan transaction: https://rinkeby.etherscan.io/tx/0x1560b45e821f469cda9ca317a0bead1f62603992f85645936ff54e0f3adb3de1
    * Contract address: 0x35C1FDdd4E1d5cc70890f150695e86dAee9dC7f5
+
+![etherscan_contract](docs/etherscan_contract.PNG)
 
 
 * Libraries used in the projects:
