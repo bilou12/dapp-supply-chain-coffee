@@ -6,6 +6,9 @@ The application suits the interactions between farmers, distributors, retailers 
 
 The actors are represented by their ethereum addresses. The owner of the contract is initially in charge to add the addresses to the distributor, retailer, consumer roles respectively.
 
+![activity_diagram](./docs/activity_diagram.png)
+
+
 ## Getting started
 
 * Delete the build folder if any and migrate the contract to a chain (either a local ganache or ethereum based on the truffle-config.js file)
