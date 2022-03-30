@@ -8,13 +8,17 @@ The actors are represented by their ethereum addresses. The owner of the contrac
 
 * UML
    * Activity diagram
+   
 ![activity_diagram](docs/activity_diagram.PNG)
+   
    * Sequence diagram
 ![sequence_diagram](docs/sequence_diagram.PNG)
+   
    * State diagram
 ![state_diagram](docs/state_diagram.PNG)
+   
    * Class diagram
-![class_diagram](docs/class_diagram.PNG)
+![classes_diagram](docs/classes_diagram.PNG)
 
 
 ## Getting started
