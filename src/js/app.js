@@ -23,6 +23,74 @@ App = {
         return await App.initWeb3();
     },
 
+    initWeb3: async function () {
+        /// Find or Inject Web3 Provider
+        /// Modern dapp browsers...
+        if (window.ethereum) {
+            console.log('using window.ethereum');
+            App.web3Provider = window.ethereum;
+            try {
+                // Request account access
+                await window.ethereum.enable();
+            } catch (error) {
+                // User denied account access...
+                console.error("User denied account access")
+            }
+        }
+        // Legacy dapp browsers...
+        else if (window.web3) {
+            console.log('using window.web3');
+            App.web3Provider = window.web3.currentProvider;
+        }
+        // If no injected web3 instance is detected, fall back to Ganache
+        else {
+            console.log('using localhost web3Provider');
+            App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+        }
+
+        console.log('App.web3Provider: ' + App.web3Provider)
+        App.getMetaskAccountID();
+
+        return App.initSupplyChain();
+    },
+
+    getMetaskAccountID: function () {
+        web3 = new Web3(App.web3Provider);
+
+        // Retrieving accounts
+        web3.eth.getAccounts(function (err, res) {
+            if (err) {
+                console.log('Error:', err);
+                return;
+            }
+            console.log('getMetaskID:', res);
+            App.metamaskAccountID = res[0];
+        })
+    },
+
+    initSupplyChain: function () {
+        /// Source the truffle compiled smart contracts
+        var jsonSupplyChain = '../../build/contracts/SupplyChain.json';
+
+        /// JSONfy the smart contracts
+        $.getJSON(jsonSupplyChain, function (data) {
+            var SupplyChainArtifact = data;
+
+            App.contracts.SupplyChain = TruffleContract(SupplyChainArtifact);
+            console.log('App.contracts.SupplyChain', App.contracts.SupplyChain);
+            App.contracts.SupplyChain.setProvider(App.web3Provider);
+            console.log('App.web3Provider', App.web3Provider);
+
+            web3.eth.defaultAccount = web3.eth.accounts[0];
+
+            App.fetchItemBufferOne();
+            App.fetchItemBufferTwo();
+            App.fetchEvents();
+        });
+
+        return App.bindEvents();
+    },
+
     readForm: function () {
         App.sku = $("#sku").val();
         App.upc = $("#upc").val();
@@ -55,71 +123,6 @@ App = {
         );
     },
 
-    initWeb3: async function () {
-        /// Find or Inject Web3 Provider
-        /// Modern dapp browsers...
-        if (window.ethereum) {
-            console.log('using window.etherum');
-            App.web3Provider = window.ethereum;
-            try {
-                // Request account access
-                await window.ethereum.enable();
-            } catch (error) {
-                // User denied account access...
-                console.error("User denied account access")
-            }
-        }
-        // Legacy dapp browsers...
-        else if (window.web3) {
-            console.log('using window.web3');
-            App.web3Provider = window.web3.currentProvider;
-        }
-        // If no injected web3 instance is detected, fall back to Ganache
-        else {
-            console.log('using localhost web3Provider');
-            App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
-        }
-
-        App.getMetaskAccountID();
-
-        return App.initSupplyChain();
-    },
-
-    getMetaskAccountID: function () {
-        web3 = new Web3(App.web3Provider);
-
-        // Retrieving accounts
-        web3.eth.getAccounts(function (err, res) {
-            if (err) {
-                console.log('Error:', err);
-                return;
-            }
-            console.log('getMetaskID:', res);
-            App.metamaskAccountID = res[0];
-
-        })
-    },
-
-    initSupplyChain: function () {
-        /// Source the truffle compiled smart contracts
-        var jsonSupplyChain = '../../build/contracts/SupplyChain.json';
-
-        /// JSONfy the smart contracts
-        $.getJSON(jsonSupplyChain, function (data) {
-            console.log('data', data);
-            var SupplyChainArtifact = data;
-            App.contracts.SupplyChain = TruffleContract(SupplyChainArtifact);
-            App.contracts.SupplyChain.setProvider(App.web3Provider);
-
-            web3.eth.defaultAccount = web3.eth.accounts[0];
-
-            App.fetchItemBufferOne();
-            App.fetchItemBufferTwo();
-            App.fetchEvents();
-        });
-
-        return App.bindEvents();
-    },
 
     bindEvents: function () {
         $(document).on('click', App.handleButtonClick);
@@ -324,8 +327,6 @@ App = {
     },
 
     fetchItemBufferOne: function () {
-        ///   event.preventDefault();
-        ///    var processId = parseInt($(event.target).data('id'));
         App.upc = $('#upc').val();
         console.log('upc', App.upc);
 
