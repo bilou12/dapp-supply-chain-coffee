@@ -222,7 +222,8 @@ contract_abi = [
              "type": "address"},
             {"internalType": "address", "name": "consumerID",
              "type": "address"}], "stateMutability": "view", "type": "function",
-        "constant": True}]
+        "constant": True}
+]
 contract_instance = w3.eth.contract(address=contract_address, abi=contract_abi)
 
 # call
