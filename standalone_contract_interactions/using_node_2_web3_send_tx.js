@@ -1,3 +1,7 @@
+// This method does not work because Infura does not support eth_sendTransaction.
+// (For it to support that, it would need to know your private key, but it's a shared public node.)
+// Prefer method 3.
+
 const Web3 = require('web3');
 const fs = require('fs');
 
@@ -8,9 +12,6 @@ const MyContract = require('../build/contracts/SupplyChain.json');
 
 const account_address = '0xAFE4B7Ea233758Ae11b7687e43eF97AB6F6407f9';
 const UPC = 1;
-
-// does not work because Infura does not support eth_sendTransaction 
-// (For it to support that, it would need to know your private key, but it's a shared public node.)
 
 const init = async () => {
   const web3 = new Web3(`https://rinkeby.infura.io/v3/${infuraKey}`);

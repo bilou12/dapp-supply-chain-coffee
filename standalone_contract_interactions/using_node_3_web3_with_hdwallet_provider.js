@@ -1,3 +1,5 @@
+// This is the prefered method to interact with smart contracts using node.
+
 const Web3 = require('web3');
 const fs = require('fs');
 const Provider = require('truffle-hdwallet-provider');
