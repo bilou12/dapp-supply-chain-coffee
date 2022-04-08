@@ -1,5 +1,7 @@
 // https://morioh.com/p/d3ef8b16c770
 
+// This method works with Infura but is verbose. Prefer method 3.
+
 const Web3 = require('web3');
 const fs = require('fs');
 
