@@ -1,7 +1,9 @@
 # dapp-supply-chain-coffee
+
 DApp supply chain solution backed by the Ethereum platform.
 
 ## About
+
 The application suits the interactions between farmers, distributors, retailers and consumers in an example of supply-chain.
 
 The actors are represented by their ethereum addresses. The owner of the contract is initially in charge to add the addresses to the distributor, retailer, consumer roles respectively.
@@ -16,27 +18,25 @@ The actors are represented by their ethereum addresses. The owner of the contrac
 
 ![console_fetch_item_buffer](docs/console_fetch_item_buffer.PNG)
 
+- UML
+  - Activity diagram
 
-* UML
-   * Activity diagram
-   
 ![activity_diagram](docs/activity_diagram.PNG)
-   
-   * Sequence diagram
-![sequence_diagram](docs/sequence_diagram.PNG)
-   
-   * State diagram
-![state_diagram](docs/state_diagram.PNG)
-   
-   * Class diagram
-![classes_diagram](docs/classes_diagram.PNG)
 
+- Sequence diagram
+  ![sequence_diagram](docs/sequence_diagram.PNG)
+
+- State diagram
+  ![state_diagram](docs/state_diagram.PNG)
+
+- Class diagram
+  ![classes_diagram](docs/classes_diagram.PNG)
 
 ## Getting started
 
-* Delete the build folder if any and migrate the contract to a chain (either a local ganache or ethereum based on the truffle-config.js file)
+- Delete the build folder if any and migrate the contract to a chain (either a local ganache or ethereum based on the truffle-config.js file)
 
-To deploy on a specific network: 
+To deploy on a specific network:
 
 ```bash
 truffle console --network rinkeby
@@ -44,7 +44,7 @@ compile
 migrate --reset
 ```
 
-To deploy on the development network (local ganache): 
+To deploy on the development network (local ganache):
 
 ```bash
 truffle compile
@@ -174,21 +174,202 @@ Summary
 > Final cost:          0.08756078 ETH
 ```
 
-* Start the dapp:
+- Start the dapp:
 
 ```bash
 npm run dev
 ```
 
-
-* Deployment on the Rinkeby network:
-   * Etherscan transaction: https://rinkeby.etherscan.io/tx/0x1560b45e821f469cda9ca317a0bead1f62603992f85645936ff54e0f3adb3de1
-   * Contract address: 0x35C1FDdd4E1d5cc70890f150695e86dAee9dC7f5
+- Deployment on the Rinkeby network:
+  - Etherscan transaction: https://rinkeby.etherscan.io/tx/0x1560b45e821f469cda9ca317a0bead1f62603992f85645936ff54e0f3adb3de1
+  - Contract address: 0x35C1FDdd4E1d5cc70890f150695e86dAee9dC7f5
 
 ![etherscan_contract](docs/etherscan_contract.PNG)
 
+- Libraries used in the projects:
+  - truffle: to help compile, test and deploy the smart-contracts
+  - mocha / chai: js testing framework / assertions
+  - web3: to interact with ethereum nodes
 
-* Libraries used in the projects:
-   - truffle: to help compile, test and deploy the smart-contracts
-   - mocha / chai: js testing framework / assertions
-   - web3: to interact with ethereum nodes
+## Migration to the Polygon Mumbai test network
+
+### Configure Metamask to connect to Polygon Mumbai test network
+
+- Browse https://mumbai.polygonscan.com/ and click on "Add Mumbai network" at the bottom of the page
+
+PS: Mumbai connects with Ethereum's Goërli Testnet
+
+```bash
+truffle migrate --skip-dry-run
+```
+
+```bash
+Starting migrations...
+======================
+> Network name:    'polygon_mumbai'
+> Network id:      80001
+> Block gas limit: 20000000 (0x1312d00)
+
+
+1_initial_migration.js
+======================
+
+   Deploying 'Migrations'
+   ----------------------
+   > transaction hash:    0xf4c04638a2e739338d8f837a22083f96e97d3764f33c2a5943ea5d8828c01057
+undefined
+undefined
+undefined
+   > Blocks: 1            Seconds: 13
+   > contract address:    0xf768B47d3A4B803620b6FC2e5Ad9E078465afF92
+   > block number:        26474947
+   > block timestamp:     1653570754
+   > account:             0xc6696eDf5e753f5B3009608F9e25ED2cb713C7fA
+   > balance:             1.185407862452754251
+   > gas used:            274508 (0x4304c)
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.00274508 ETH
+
+   Pausing for 2 confirmations...
+
+   -------------------------------
+   > confirmation number: 1 (block: 26474948)
+   > confirmation number: 2 (block: 26474949)
+
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.00274508 ETH
+
+
+2_deploy_contracts.js
+=====================
+
+   Deploying 'FarmerRole'
+   ----------------------
+   > transaction hash:    0xe8c2a1445f7e02ab97abe8fef333661150e1d5469f768c7669f2b5f08a99a250
+undefined
+undefined
+undefined
+   > Blocks: 2            Seconds: 13
+   > contract address:    0xEB7Cf8f70EE5c121Fd2Fb897E62c959073eD8C0e
+   > block number:        26474952
+   > block timestamp:     1653570804
+   > account:             0xc6696eDf5e753f5B3009608F9e25ED2cb713C7fA
+   > balance:             1.181635222452754251
+   > gas used:            331326 (0x50e3e)
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.00331326 ETH
+
+   Pausing for 2 confirmations...
+
+   -------------------------------
+   > confirmation number: 1 (block: 26474953)
+   > confirmation number: 2 (block: 26474954)
+
+   Deploying 'DistributorRole'
+   ---------------------------
+   > transaction hash:    0x6d87ffbb3caefd62604305b4cd05f5979a4e616403b71eed195b67935f6f56ff
+undefined
+   > Blocks: 1            Seconds: 5
+   > contract address:    0x763D6ad1DED28C1fE13254c40C6e12f49ED15fFb
+   > block number:        26474955
+   > block timestamp:     1653570834
+   > account:             0xc6696eDf5e753f5B3009608F9e25ED2cb713C7fA
+   > balance:             1.178321962452754251
+   > gas used:            331326 (0x50e3e)
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.00331326 ETH
+
+   Pausing for 2 confirmations...
+
+   -------------------------------
+   > confirmation number: 1 (block: 26474956)
+   > confirmation number: 2 (block: 26474957)
+
+   Deploying 'RetailerRole'
+   ------------------------
+   > transaction hash:    0xe495a5014625bc58ac1e7dbd2151a5d57fdb21db690e59a666549d0fb56b60d9
+undefined
+   > Blocks: 1            Seconds: 5
+   > contract address:    0x2681e5b15358Fc7414ede4543eA9C73225FedcD6
+   > block number:        26474958
+   > block timestamp:     1653570864
+   > account:             0xc6696eDf5e753f5B3009608F9e25ED2cb713C7fA
+   > balance:             1.175008702452754251
+   > gas used:            331326 (0x50e3e)
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.00331326 ETH
+
+   Pausing for 2 confirmations...
+
+   -------------------------------
+   > confirmation number: 1 (block: 26474959)
+   > confirmation number: 2 (block: 26474960)
+
+   Deploying 'ConsumerRole'
+   ------------------------
+   > transaction hash:    0xb46e32fdcf30b86e3a80d8cc7ffa5aac8a1a0de71a034707ee46e1256c541758
+undefined
+   > Blocks: 1            Seconds: 5
+   > contract address:    0xb39B4EAdB21953Ed6D463919FA2aa151Fe02D3A5
+   > block number:        26474961
+   > block timestamp:     1653570894
+   > account:             0xc6696eDf5e753f5B3009608F9e25ED2cb713C7fA
+   > balance:             1.171695442452754251
+   > gas used:            331326 (0x50e3e)
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.00331326 ETH
+
+   Pausing for 2 confirmations...
+
+   -------------------------------
+   > confirmation number: 1 (block: 26474962)
+   > confirmation number: 2 (block: 26474963)
+
+   Deploying 'SupplyChain'
+   -----------------------
+   > transaction hash:    0x9b08d89a244d14048a146c4c5cac06f6c2b7ad8ab48e07bcd4a670a2ee24e739
+undefined
+   > Blocks: 1            Seconds: 5
+   > contract address:    0xe3d67D70550084d2DFd76251c874279AcDdDC396
+   > block number:        26474964
+   > block timestamp:     1653570924
+   > account:             0xc6696eDf5e753f5B3009608F9e25ED2cb713C7fA
+   > balance:             1.143798172452754251
+   > gas used:            2789727 (0x2a915f)
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.02789727 ETH
+
+   Pausing for 2 confirmations...
+
+   -------------------------------
+   > confirmation number: 1 (block: 26474965)
+   > confirmation number: 2 (block: 26474966)
+
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.04115031 ETH
+
+Summary
+=======
+> Total deployments:   6
+> Final cost:          0.04389539 ETH
+
+
+- Blocks: 0            Seconds: 0
+- Saving migration to chain.
+- Blocks: 0            Seconds: 0
+- Blocks: 0            Seconds: 0
+- Blocks: 0            Seconds: 0
+- Blocks: 0            Seconds: 0
+- Blocks: 0            Seconds: 0
+- Saving migration to chain.
+```

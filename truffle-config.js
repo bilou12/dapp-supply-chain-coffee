@@ -1,4 +1,4 @@
-const HDWalletProvider = require('truffle-hdwallet-provider');
+const HDWalletProvider = require('@truffle/hdwallet-provider');
 
 const fs = require('fs');
 const mnemonic = fs.readFileSync(".secret").toString().trim();
@@ -28,9 +28,18 @@ module.exports = {
       gas: 4500000, // rinkeby has a lower block limit than mainnet
       gasPrice: 10000000000
     },
+
+    polygon_mumbai: {
+      // networkCheckTimeout: 10000,
+      provider: () => new HDWalletProvider(mnemonic, `https://polygon-mumbai.infura.io/v3/${infuraKey}`),
+      network_id: 80001,
+      confirmations: 2,
+      gas: 4500000,
+      gasPrice: 10000000000,
+      // timeoutBlocks: 200,
+      skipDryRun: true
+    },
   },
-
-
 
   // Set default mocha options here, use special reporters etc.
   mocha: {
