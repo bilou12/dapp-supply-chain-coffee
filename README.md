@@ -4,17 +4,8 @@ DApp supply chain solution backed by the Ethereum platform.
 ## About
 The application suits the interactions between farmers, distributors, retailers and consumers in an example of supply-chain.
 
-The actors are represented by their ethereum addresses. The owner of the contract is initially in charge to add the addresses to the distributor, retailer, consumer roles respectively.
-
-![add_roles](docs/add_roles.PNG)
-
-![product_overview](docs/product_overview.PNG)
-![farm_details](docs/farm_details.PNG)
-![product_details](docs/product_details.PNG)
-
-![tx_history](docs/tx_history.PNG)
-
-![console_fetch_item_buffer](docs/console_fetch_item_buffer.PNG)
+The actors are represented by their ethereum addresses. 
+The owner of the contract is initially in charge to add the addresses to the distributor, retailer, consumer roles respectively.
 
 
 * UML
@@ -30,6 +21,18 @@ The actors are represented by their ethereum addresses. The owner of the contrac
    
    * Class diagram
 ![classes_diagram](docs/classes_diagram.PNG)
+
+* Features
+
+![add_roles](docs/add_roles.PNG)
+
+![product_overview](docs/product_overview.PNG)
+![farm_details](docs/farm_details.PNG)
+![product_details](docs/product_details.PNG)
+
+![tx_history](docs/tx_history.PNG)
+
+![console_fetch_item_buffer](docs/console_fetch_item_buffer.PNG)
 
 
 ## Getting started
