@@ -2,7 +2,7 @@
 DApp supply chain solution backed by the Ethereum platform.
 
 ## About
-The application represents the logistic workflow of a coffee bean bag from the farmer to the final consumers. The coffee needs to go through different states (harvested, processed, packed etc). The smart contracts are designed to represent these states so that it can be tracked and to manage access rights so that only the actor in charge of an action can make it.  
+The application represents the logistic workflow of a coffee bean bag from the farmer to the final consumers and is designed to help improve the traceability of coffee beans. The coffee needs to go through different states (harvested, processed, packed etc). The smart contracts are designed to represent these states so that it can be tracked and to manage access rights so that only the actor in charge of an action can make it.  
 
 It suits the interactions between farmers, distributors, retailers and consumers in an example of supply-chain.
 
