@@ -4,19 +4,19 @@ DApp supply chain solution backed by the Ethereum platform.
 
 ## About
 
-The application suits the interactions between farmers, distributors, retailers and consumers in an example of supply-chain.
+<<<<<<< HEAD
 
-The actors are represented by their ethereum addresses. The owner of the contract is initially in charge to add the addresses to the distributor, retailer, consumer roles respectively.
+# The application suits the interactions between farmers, distributors, retailers and consumers in an example of supply-chain.
 
-![add_roles](docs/add_roles.PNG)
+The application represents the logistic workflow of a coffee bean bag from the farmer to the final consumers and is designed to help improve the traceability of coffee beans. The coffee needs to go through different states (harvested, processed, packed etc). The smart contracts are designed to represent these states so that it can be tracked and to manage access rights so that only the actor in charge of an action can make it.
 
-![product_overview](docs/product_overview.PNG)
-![farm_details](docs/farm_details.PNG)
-![product_details](docs/product_details.PNG)
+> > > > > > > fde47f1f9d30882af4076a9ab1c4e069e4edae21
 
-![tx_history](docs/tx_history.PNG)
+It suits the interactions between farmers, distributors, retailers and consumers in an example of supply-chain.
 
-![console_fetch_item_buffer](docs/console_fetch_item_buffer.PNG)
+The actors are represented by their ethereum addresses.
+
+The owner of the contract is initially in charge to add the addresses to the distributor, retailer, consumer roles respectively.
 
 - UML
   - Activity diagram
@@ -31,6 +31,18 @@ The actors are represented by their ethereum addresses. The owner of the contrac
 
 - Class diagram
   ![classes_diagram](docs/classes_diagram.PNG)
+
+- Features
+
+![add_roles](docs/add_roles.PNG)
+
+![product_overview](docs/product_overview.PNG)
+![farm_details](docs/farm_details.PNG)
+![product_details](docs/product_details.PNG)
+
+![tx_history](docs/tx_history.PNG)
+
+![console_fetch_item_buffer](docs/console_fetch_item_buffer.PNG)
 
 ## Getting started
 
